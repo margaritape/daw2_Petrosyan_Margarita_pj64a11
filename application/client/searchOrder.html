@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OptiOrder - Search Order</title>
+</head>
+<body>
+    <h1>Search Order by ID</h1>
+
+    <form action="../server/searchOrder.php" method="get">
+        <label for="orderId">Order ID:</label>
+        <input type="text" id="orderId" name="orderId" required>
+
+        <button type="submit">Search Order</button>
+    </form>
+
+    <br>
+
+    <button onclick="window.location.href='viewOrders.html'">
+        Back to View Orders
+    </button>
+
+    <button onclick="window.location.href='operations.html'">
+        Back to Operations
+    </button>
+
+    <button onclick="window.location.href='index.html'">
+        Back to Home
+    </button>
+</body>
+</html>
