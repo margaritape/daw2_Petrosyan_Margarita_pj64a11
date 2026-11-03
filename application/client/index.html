@@ -9,6 +9,8 @@
     <h1>OptiOrder</h1>
     <p>Optics Order Management Application</p>
 
+    <p id="errorMessage"></p>
+
     <button onclick="window.location.href='documentation.html'">
         Application Documentation
     </button>
@@ -16,5 +18,14 @@
     <button onclick="window.location.href='login.html'">
         Login
     </button>
+
+    <script>
+        var parameters = new URLSearchParams(window.location.search);
+
+        if (parameters.get("error") == "authentication") {
+            document.getElementById("errorMessage").textContent =
+                "Incorrect username or password. Please try again.";
+        }
+    </script>
 </body>
 </html>
