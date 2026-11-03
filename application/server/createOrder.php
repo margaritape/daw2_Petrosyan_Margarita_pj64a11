@@ -13,7 +13,7 @@ function calculateTotal($products, $quantities) {
     $selectedProducts = array();
 
     foreach ($products as $id => $productName) {
-        $quantity = intval($quantities[$id]);
+        $quantity = isset($quantities[$id]) ? intval($quantities[$id]) : 0;
 
         if ($quantity > 0) {
             $price = $prices[$id];
