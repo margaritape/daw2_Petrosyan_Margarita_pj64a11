@@ -22,4 +22,6 @@ function searchOrder($orderId) {
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $orderId = isset($_GET["orderId"]) ? trim($_GET["orderId"]) : "";
     searchOrder($orderId);
+} else {
+    http_response_code(405);
 }
