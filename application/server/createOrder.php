@@ -1,118 +1,85 @@
-
 <?php
 
-function calculateTotal($products, $quantities) {
-    $prices = array(
-        1 => 100,
-        2 => 80,
-        3 => 30,
-        4 => 10
-    );
+require_once __DIR__ . "/functions.php";
 
-    $total = 0;
-    $selectedProducts = array();
+// Calculates the price of the selected products, with 21% VAT.
+function calculateTotals($selected, $quantities) {
+    $catalog = getCatalog();
+    $orderProducts = array();
+    $subtotal = 0;
 
-    foreach ($products as $id => $productName) {
+    foreach ($selected as $id => $productName) {
         $quantity = isset($quantities[$id]) ? intval($quantities[$id]) : 0;
 
-        if ($quantity > 0) {
-            $price = $prices[$id];
-            $subtotal = $price * $quantity;
-            $total = $total + $subtotal;
+        if (isset($catalog[$id]) && $quantity > 0) {
+            $price = $catalog[$id]["price"];
+            $lineSubtotal = $price * $quantity;
+            $subtotal = $subtotal + $lineSubtotal;
 
-            $selectedProducts[] = array(
-                "name" => $productName,
+            $orderProducts[] = array(
+                "name" => $catalog[$id]["name"],
                 "quantity" => $quantity,
                 "unitPrice" => $price,
-                "subtotal" => $subtotal
+                "subtotal" => $lineSubtotal
             );
         }
     }
 
-    $vat = $total * 0.21;
-    $totalWithVat = $total + $vat;
+    $vat = round($subtotal * VAT_RATE, 2);
 
     return array(
-        "products" => $selectedProducts,
-        "subtotal" => $total,
+        "products" => $orderProducts,
+        "subtotal" => $subtotal,
         "vat" => $vat,
-        "totalWithVat" => $totalWithVat
+        "totalWithVat" => $subtotal + $vat
     );
 }
 
-function showError() {
-    http_response_code(404);
-    header("Content-Type: text/html; charset=utf-8");
-
-    echo "<h1>Error 404</h1>";
-    echo "<p>There was a problem opening or saving the orders file.</p>";
-    echo "<button onclick=\"window.location.href='../client/viewOrders.html'\">Back to View Orders</button>";
-    echo "<button onclick=\"window.location.href='../client/operations.html'\">Back to Operations</button>";
-    echo "<button onclick=\"window.location.href='../client/index.html'\">Back to Home</button>";
-    exit;
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    $orderId = $_POST["orderId"];
-    $customerName = $_POST["customerName"];
-    $address = $_POST["address"];
-    $email = $_POST["email"];
-    $phone = $_POST["phone"];
-
-    $products = isset($_POST["products"]) ? $_POST["products"] : array();
-    $quantities = isset($_POST["quantities"]) ? $_POST["quantities"] : array();
-
-    $result = calculateTotal($products, $quantities);
-
-    $order = array(
-        "orderId" => $orderId,
-        "customerName" => $customerName,
-        "address" => $address,
-        "email" => $email,
-        "phone" => $phone,
-        "products" => $result["products"],
-        "subtotal" => $result["subtotal"],
-        "vat" => $result["vat"],
-        "totalWithVat" => $result["totalWithVat"]
-    );
-
-    $file = __DIR__ . "/../../orders/orders.json";
-
-    if (!file_exists($file)) {
-        if (file_put_contents($file, json_encode(array())) === false) {
-            showError();
+// Adds the order to orders.json (the file is created with the first order).
+function saveOrder($order) {
+    if (!file_exists(ORDERS_FILE)) {
+        if (@file_put_contents(ORDERS_FILE, json_encode(array())) === false) {
+            showError("The orders file (orders.json) could not be created.");
         }
     }
 
-    $content = file_get_contents($file);
-
-    if ($content === false) {
-        showError();
-    }
-
-    $orders = json_decode($content, true);
-
-    if (!is_array($orders)) {
-        showError();
-    }
-
+    $orders = readOrders();
     $orders[] = $order;
 
-    $saved = file_put_contents(
-        $file,
-        json_encode($orders, JSON_PRETTY_PRINT),
-        LOCK_EX
-    );
-
+    $saved = @file_put_contents(ORDERS_FILE, json_encode($orders, JSON_PRETTY_PRINT), LOCK_EX);
     if ($saved === false) {
-        showError();
+        showError("The orders file (orders.json) could not be saved.");
     }
-
-    header("Content-Type: text/plain; charset=utf-8");
-    http_response_code(200);
-
-    echo number_format($result["totalWithVat"], 2, ".", "") . " EUR";
 }
 
-?>
+// Creates the order, saves it and sends only the total price with VAT (200 OK, plain text).
+function createOrder() {
+    $selected = isset($_POST["products"]) ? $_POST["products"] : array();
+    $quantities = isset($_POST["quantities"]) ? $_POST["quantities"] : array();
+
+    $totals = calculateTotals($selected, $quantities);
+
+    $order = array(
+        "orderId" => trim($_POST["orderId"]),
+        "customerName" => trim($_POST["customerName"]),
+        "address" => trim($_POST["address"]),
+        "email" => trim($_POST["email"]),
+        "phone" => trim($_POST["phone"]),
+        "products" => $totals["products"],
+        "subtotal" => $totals["subtotal"],
+        "vat" => $totals["vat"],
+        "totalWithVat" => $totals["totalWithVat"]
+    );
+
+    saveOrder($order);
+
+    http_response_code(200);
+    header("Content-Type: text/plain; charset=utf-8");
+    echo number_format($totals["totalWithVat"], 2, ".", "") . " EUR";
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    createOrder();
+} else {
+    http_response_code(405);
+}
