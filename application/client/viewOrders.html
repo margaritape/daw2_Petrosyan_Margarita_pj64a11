@@ -1,33 +1,34 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>OptiOrder - View Orders</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>View Orders</h1>
 
-    <p>Select an option:</p>
+    <label for="viewOption">Select an option:</label>
+    <select id="viewOption">
+        <option value="../server/viewAllOrders.php">View all orders</option>
+        <option value="searchOrder.html">View one order by its ID</option>
+    </select>
 
-    <button onclick="window.location.href='../server/viewAllOrders.php'">
-        View All Orders
-    </button>
-
-    <br><br>
-
-    <button onclick="window.location.href='searchOrder.html'">
-        Search Order by ID
-    </button>
+    <button type="button" onclick="accessView()">Access</button>
 
     <br><br>
 
-    <button onclick="window.location.href='operations.html'">
-        Back to Operations
-    </button>
+    <button type="button" onclick="goTo('operations.html')">Back to Operations</button>
+    <button type="button" onclick="goTo('index.html')">Back to Home</button>
 
-    <button onclick="window.location.href='index.html'">
-        Back to Home
-    </button>
+    <script>
+        function goTo(page) {
+            window.location.href = page;
+        }
+
+        function accessView() {
+            goTo(document.getElementById("viewOption").value);
+        }
+    </script>
 </body>
 </html>
