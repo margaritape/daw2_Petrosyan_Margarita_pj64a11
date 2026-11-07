@@ -1,34 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>OptiOrder - Documentation</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Application Documentation</h1>
 
     <h2>About OptiOrder</h2>
     <p>
-        OptiOrder is an application for managing customer orders
-        in an optics store.
+        OptiOrder is an e-commerce application for a European chain of
+        optics stores. It allows the sales staff of the company to enter
+        customer orders and to view the orders that have been saved.
     </p>
 
-    <h2>Application Operations</h2>
+    <h2>Operations Menu</h2>
+    <p>
+        After logging in with a username and a password, the operations
+        menu is shown. Select an operation from the list and click the
+        Access button.
+    </p>
 
     <h3>Create a New Order</h3>
     <p>
-        This option allows the user to enter customer information
-        and select products for a new order. The application
-        calculates the total price including 21% VAT and saves
-        the order.
+        This operation creates a new order. How to use it:
     </p>
+    <ol>
+        <li>Enter the order ID, the customer full name, address, email and phone number.</li>
+        <li>Check the products the customer wants to buy. When a product is checked, its quantity can be entered.</li>
+        <li>Click the Create Order button.</li>
+        <li>The application saves the order and shows the total price including 21% VAT.</li>
+    </ol>
 
     <h3>View Orders</h3>
     <p>
-        This option allows the user to view all saved orders
-        or search for a specific order using its identification.
+        This operation shows the saved orders. Select one of the two options
+        and click the Access button:
     </p>
+    <ul>
+        <li>
+            <strong>View all orders:</strong> shows a table with all the data
+            of all the saved orders.
+        </li>
+        <li>
+            <strong>View one order by its ID:</strong> enter the order ID and
+            click the Search Order button. A table with all the data of that
+            order is shown. If the order does not exist, an error message is shown.
+        </li>
+    </ul>
 
     <button onclick="window.location.href='index.html'">
         Back to Home
