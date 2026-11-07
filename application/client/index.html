@@ -1,15 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>OptiOrder</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <img src="glasses.png" alt="OptiOrder logo" width="250" style="object-fit:cover; border-radius: 50%;">
     <h1>OptiOrder</h1>
     <p>Optics Order Management Application</p>
 
-    <p id="errorMessage"></p>
+    <p id="errorMessage" class="error"></p>
 
     <button onclick="window.location.href='documentation.html'">
         Application Documentation
@@ -24,7 +25,7 @@
 
         if (parameters.get("error") == "authentication") {
             document.getElementById("errorMessage").textContent =
-                "Incorrect username or password. Please try again.";
+                "Authentication error: incorrect username or password.";
         }
     </script>
 </body>
