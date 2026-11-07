@@ -60,3 +60,15 @@ ol, ul {
     display: inline-block;
     text-align: left;
 }
+
+label[for^="product"] {
+    display: inline-block;
+    width: 230px;
+    text-align: left;
+}
+
+#orderForm label:not([for^="product"]) {
+    display: inline-block;
+    width: 190px;
+    text-align: left;
+}
