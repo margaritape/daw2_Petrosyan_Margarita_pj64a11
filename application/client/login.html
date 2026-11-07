@@ -1,31 +1,66 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>OptiOrder - Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Login</h1>
 
-    <form action="../server/authenticate.php" method="post">
+    <form id="loginForm">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username">
 
         <br><br>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password">
 
         <br><br>
 
-        <button type="submit">Login</button>
+        <button type="submit">Access Operations Menu</button>
     </form>
 
-    <br>
+    <p id="message" class="error"></p>
 
     <button onclick="window.location.href='index.html'">
         Back to Home
     </button>
+
+    <script>
+        function login(event) {
+            event.preventDefault();
+
+            var username = document.getElementById("username").value.trim();
+            var password = document.getElementById("password").value;
+
+            // Missing data is controlled in the client: nothing is sent to the server.
+            if (username == "" || password == "") {
+                document.getElementById("message").textContent =
+                    "Please enter the username and the password.";
+                return;
+            }
+
+            var data = new FormData(document.getElementById("loginForm"));
+
+            fetch("../server/authenticate.php", {
+                method: "POST",
+                body: data
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    window.location.href = "operations.html";
+                } else {
+                    window.location.href = "index.html?error=authentication";
+                }
+            })
+            .catch(function() {
+                window.location.href = "index.html?error=authentication";
+            });
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", login);
+    </script>
 </body>
 </html>
