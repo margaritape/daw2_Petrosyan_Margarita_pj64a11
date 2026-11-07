@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>OptiOrder - Create Order</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -13,22 +13,22 @@
         <label for="orderId">Order ID:</label>
         <input type="text" id="orderId" name="orderId" required>
 
-        <br><br>
+        <br>
 
         <label for="customerName">Customer Full Name:</label>
         <input type="text" id="customerName" name="customerName" required>
 
-        <br><br>
+        <br>
 
         <label for="address">Physical Address:</label>
         <input type="text" id="address" name="address" required>
 
-        <br><br>
+        <br>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
 
-        <br><br>
+        <br>
 
         <label for="phone">Phone:</label>
         <input type="text" id="phone" name="phone" required>
@@ -40,31 +40,31 @@
                onchange="toggleQuantity(1)">
         <label for="product1">Eyeglasses - €100</label>
         <input type="number" id="quantity1"
-               name="quantities[1]" min="1" value="1" disabled>
-        <br><br>
+               name="quantities[1]" min="1" disabled>
+        <br>
 
         <input type="checkbox" id="product2"
                name="products[2]" value="Sunglasses"
                onchange="toggleQuantity(2)">
         <label for="product2">Sunglasses - €80</label>
         <input type="number" id="quantity2"
-               name="quantities[2]" min="1" value="1" disabled>
-        <br><br>
+               name="quantities[2]" min="1" disabled>
+        <br>
 
         <input type="checkbox" id="product3"
                name="products[3]" value="Contact Lenses"
                onchange="toggleQuantity(3)">
         <label for="product3">Contact Lenses - €30</label>
         <input type="number" id="quantity3"
-               name="quantities[3]" min="1" value="1" disabled>
-        <br><br>
+               name="quantities[3]" min="1" disabled>
+        <br>
 
         <input type="checkbox" id="product4"
                name="products[4]" value="Lens Cleaning Kit"
                onchange="toggleQuantity(4)">
         <label for="product4">Lens Cleaning Kit - €10</label>
         <input type="number" id="quantity4"
-               name="quantities[4]" min="1" value="1" disabled>
+               name="quantities[4]" min="1" disabled>
         <br><br>
 
         <button type="submit">Create Order</button>
@@ -103,15 +103,17 @@
                 body: data
             })
             .then(function(response) {
-                if (!response.ok) {
-                    throw new Error("Order could not be saved.");
+                if (response.ok) {
+                    return response.text().then(function(result) {
+                        document.getElementById("result").textContent =
+                            "Order total including VAT: " + result;
+                    });
                 }
 
-                return response.text();
-            })
-            .then(function(result) {
-                document.getElementById("result").textContent =
-                    "Order total including VAT: " + result;
+                // The server sends an HTML page with the error message and the return buttons.
+                return response.text().then(function(html) {
+                    document.body.innerHTML = html;
+                });
             })
             .catch(function() {
                 document.getElementById("result").textContent =
