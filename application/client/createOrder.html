@@ -40,7 +40,7 @@
                onchange="toggleQuantity(1)">
         <label for="product1">Eyeglasses - €100</label>
         <input type="number" id="quantity1"
-               name="quantities[1]" min="1" disabled>
+               name="quantities[1]" min="1" value="" disabled>
         <br>
 
         <input type="checkbox" id="product2"
@@ -48,7 +48,7 @@
                onchange="toggleQuantity(2)">
         <label for="product2">Sunglasses - €80</label>
         <input type="number" id="quantity2"
-               name="quantities[2]" min="1" disabled>
+               name="quantities[2]" min="1" value="" disabled>
         <br>
 
         <input type="checkbox" id="product3"
@@ -56,7 +56,7 @@
                onchange="toggleQuantity(3)">
         <label for="product3">Contact Lenses - €30</label>
         <input type="number" id="quantity3"
-               name="quantities[3]" min="1" disabled>
+               name="quantities[3]" min="1" value="" disabled>
         <br>
 
         <input type="checkbox" id="product4"
@@ -64,10 +64,10 @@
                onchange="toggleQuantity(4)">
         <label for="product4">Lens Cleaning Kit - €10</label>
         <input type="number" id="quantity4"
-               name="quantities[4]" min="1" disabled>
+               name="quantities[4]" min="1" value="" disabled>
         <br><br>
 
-        <button type="submit">Create Order</button>
+        <button type="submit" id="submitBtn" disabled >Create Order</button>
     </form>
 
     <p id="result"></p>
@@ -90,6 +90,19 @@
             var quantity = document.getElementById("quantity" + id);
 
             quantity.disabled = !checkbox.checked;
+            quantity.value=1;
+            if (checkbox.checked) {
+                quantity.value=1;
+            } else {
+                quantity.value=null;
+
+            }
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+
+            document.getElementById('submitBtn').disabled = checked.length === 0;
+
+
+
         }
 
         function sendOrder(event) {
@@ -97,6 +110,9 @@
 
             var form = document.getElementById("orderForm");
             var data = new FormData(form);
+            const data1 = Object.fromEntries(data.entries());
+            console.log(data1);
+
 
             fetch("../server/createOrder.php", {
                 method: "POST",
